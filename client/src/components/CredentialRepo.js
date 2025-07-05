@@ -1,8 +1,10 @@
+// CredentialRepo.js - Handles viewing, adding, editing, and deleting credentials for a user's divisions
 import React, { useState, useEffect } from 'react';
-import './CredentialRepo.css';
+import '../styles/CredentialRepo.css';
 import CredentialRow from './CredentialRow';
 
 function CredentialRepo({ user, token, showToast }) {
+  // State for user's divisions, selected division, and credentials
   const [divisions, setDivisions] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState('');
   const [credentials, setCredentials] = useState([]);
@@ -11,8 +13,8 @@ function CredentialRepo({ user, token, showToast }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Fetch division info for the user (admin gets all, others get only their divisions)
   useEffect(() => {
-    // For admin, fetch all division info; for others, fetch only their divisions
     if (user && user.divisions && user.divisions.length > 0) {
       if (user.role === 'admin') {
         fetch('/api/admin/all', {
@@ -45,6 +47,7 @@ function CredentialRepo({ user, token, showToast }) {
     }
   }, [user, token]);
 
+  // Fetch credentials for the selected division
   useEffect(() => {
     if (selectedDivision) {
       setLoading(true);
@@ -60,6 +63,7 @@ function CredentialRepo({ user, token, showToast }) {
     }
   }, [selectedDivision, token, success]);
 
+  // Add a new credential
   const handleAdd = async (e) => {
     e.preventDefault();
     setError('');
@@ -86,6 +90,7 @@ function CredentialRepo({ user, token, showToast }) {
     }
   };
 
+  // Update a credential (manager/admin only)
   const handleUpdate = async (credId, updated) => {
     setError('');
     setSuccess('');
@@ -108,6 +113,7 @@ function CredentialRepo({ user, token, showToast }) {
     setTimeout(() => setSuccess(''), 2000);
   };
 
+  // Delete a credential (manager/admin only)
   const handleDelete = async (credId) => {
     setError('');
     setSuccess('');
@@ -126,11 +132,14 @@ function CredentialRepo({ user, token, showToast }) {
     }
   };
 
+  // Only managers/admins can edit/delete
   const canEdit = user.role === 'manager' || user.role === 'admin';
 
+  // Render credential repository UI
   return (
     <div className="cred-repo">
       <h3>Your Division Credential Repositories</h3>
+      {/* Division selector */}
       <select value={selectedDivision} onChange={e => setSelectedDivision(e.target.value)}>
         {divisions.map(div => (
           <option key={div._id} value={div._id}>{div.name}</option>
@@ -154,6 +163,7 @@ function CredentialRepo({ user, token, showToast }) {
           </tbody>
         </table>
       )}
+      {/* Add credential form */}
       <form className="add-cred-form" onSubmit={handleAdd}>
         <input
           type="text"
@@ -171,6 +181,7 @@ function CredentialRepo({ user, token, showToast }) {
         />
         <button type="submit">Add Credential</button>
       </form>
+      {/* Inline error/success messages (toasts are also used) */}
       {error && <div className="error">{error}</div>}
       {success && <div className="success">{success}</div>}
     </div>

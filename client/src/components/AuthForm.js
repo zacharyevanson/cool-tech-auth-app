@@ -1,12 +1,15 @@
+// AuthForm.js - Login/Register form for authentication
 import React, { useState } from 'react';
-import './AuthForm.css';
+import '../styles/AuthForm.css';
 
 function AuthForm({ onAuth, type = 'login' }) {
+  // State for form fields and feedback
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Handle form submission for login/register
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -27,6 +30,7 @@ function AuthForm({ onAuth, type = 'login' }) {
     }
   };
 
+  // Render login/register form
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
       <h2>{type === 'login' ? 'Login' : 'Register'}</h2>
