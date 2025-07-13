@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/cooltechauth', {
+mongoose.connect('mongodb://0.0.0.0:27017/cooltechauth', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
